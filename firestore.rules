@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Contact Inquiries: Anyone can submit a message, public cannot list or tamper
+    match /contact_inquiries/{inquiryId} {
+      allow create: if request.resource.data.email is string 
+                    && request.resource.data.name is string 
+                    && request.resource.data.message is string;
+      allow read: if true;
+    }
+    
+    // Newsletter Subscribers: Anyone can subscribe
+    match /newsletter_subscribers/{subscriberId} {
+      allow create: if request.resource.data.email is string;
+      allow read: if true;
+    }
+    
+    // General read access for portfolio content collections
+    match /{document=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}

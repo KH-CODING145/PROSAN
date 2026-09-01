@@ -1,0 +1,193 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 780" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient (Vibrant Studio Cyan-Blue as in ID/Passport Photo) -->
+    <linearGradient id="bgSky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#00a0e9" />
+      <stop offset="35%" stop-color="#0092dd" />
+      <stop offset="70%" stop-color="#0080ca" />
+      <stop offset="100%" stop-color="#006eb4" />
+    </linearGradient>
+
+    <!-- Face Skin Gradient -->
+    <linearGradient id="skin" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fbe3d5" />
+      <stop offset="45%" stop-color="#f6cfba" />
+      <stop offset="85%" stop-color="#ebb99e" />
+      <stop offset="100%" stop-color="#dc9d7e" />
+    </linearGradient>
+
+    <!-- Ear / Shading Tone -->
+    <linearGradient id="earSkin" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8d3c0" />
+      <stop offset="100%" stop-color="#e29b7c" />
+    </linearGradient>
+
+    <!-- Hair Tone Gradient (Jet Black with subtle deep brown sheen) -->
+    <linearGradient id="hair" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2a2e39" />
+      <stop offset="25%" stop-color="#181a20" />
+      <stop offset="70%" stop-color="#0d0e12" />
+      <stop offset="100%" stop-color="#050608" />
+    </linearGradient>
+
+    <!-- Suit Black Gradient -->
+    <linearGradient id="suit" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1f242e" />
+      <stop offset="40%" stop-color="#11141a" />
+      <stop offset="100%" stop-color="#07080a" />
+    </linearGradient>
+
+    <!-- Lapel Accent Gradient -->
+    <linearGradient id="lapel" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2a303c" />
+      <stop offset="50%" stop-color="#171b22" />
+      <stop offset="100%" stop-color="#0b0d11" />
+    </linearGradient>
+
+    <!-- Dark Blue Silk Necktie -->
+    <linearGradient id="tie" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a8a" />
+      <stop offset="50%" stop-color="#172554" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <!-- White Shirt Gradient -->
+    <linearGradient id="shirt" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="80%" stop-color="#f1f5f9" />
+      <stop offset="100%" stop-color="#e2e8f0" />
+    </linearGradient>
+
+    <!-- Drop Shadows -->
+    <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.15" />
+    </filter>
+  </defs>
+
+  <!-- 1. Background (Passport Blue) -->
+  <rect width="600" height="780" fill="url(#bgSky)" />
+
+  <!-- Background Soft Ambient Light -->
+  <circle cx="300" cy="280" r="260" fill="#38bdf8" opacity="0.3" filter="blur(40px)" />
+
+  <!-- 2. Shoulders & Formal Dark Suit Jacket -->
+  <path d="M 0 780 L 0 680 C 20 570 90 510 170 480 L 230 460 L 300 520 L 370 460 L 430 480 C 510 510 580 570 600 680 L 600 780 Z" fill="url(#suit)" />
+
+  <!-- Suit Inner Shadow / Chest Area -->
+  <polygon points="230,460 370,460 340,780 260,780" fill="#090b0e" />
+
+  <!-- 3. Crisp White Dress Shirt (V-Shape opening) -->
+  <polygon points="245,450 355,450 330,780 270,780" fill="url(#shirt)" />
+
+  <!-- 4. Neck -->
+  <path d="M 255 350 L 255 450 Q 300 475 345 450 L 345 350 Z" fill="url(#skin)" />
+  <!-- Under-chin shadow on neck -->
+  <path d="M 255 350 Q 300 395 345 350 Q 300 375 255 350 Z" fill="#b96a45" opacity="0.35" />
+
+  <!-- 5. Crisp Shirt Collars -->
+  <!-- Left Collar Point -->
+  <polygon points="248,420 300,530 276,550 220,455" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" filter="url(#softShadow)" />
+  <polygon points="248,420 275,510 226,455" fill="#f8fafc" />
+  <!-- Right Collar Point -->
+  <polygon points="352,420 300,530 324,550 380,455" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" filter="url(#softShadow)" />
+  <polygon points="352,420 325,510 374,455" fill="#e2e8f0" />
+
+  <!-- 6. Dark Blue Necktie -->
+  <!-- Knot -->
+  <polygon points="284,520 316,520 326,560 274,560" fill="url(#tie)" stroke="#1e293b" stroke-width="1" />
+  <path d="M 292 524 L 308 524 L 312 555 L 288 555 Z" fill="#3b82f6" opacity="0.25" />
+  <!-- Tie Body -->
+  <polygon points="278,560 322,560 335,740 300,780 265,740" fill="url(#tie)" stroke="#0f172a" stroke-width="1" />
+  <path d="M 292 562 L 306 562 L 312 740 L 300 765 L 290 740 Z" fill="#60a5fa" opacity="0.2" />
+
+  <!-- 7. Suit Jacket Lapels & Front -->
+  <!-- Left Lapel -->
+  <polygon points="170,480 276,550 230,780 90,780 50,600" fill="url(#lapel)" />
+  <path d="M 170 480 L 276 550 L 245 680" stroke="#334155" stroke-width="1" fill="none" opacity="0.4" />
+  <!-- Right Lapel -->
+  <polygon points="430,480 324,550 370,780 510,780 550,600" fill="url(#suit)" />
+  <path d="M 430 480 L 324 550 L 355 680" stroke="#334155" stroke-width="1" fill="none" opacity="0.4" />
+
+  <!-- 8. Ears -->
+  <!-- Left Ear -->
+  <path d="M 195 255 C 160 255 160 335 198 345 Z" fill="url(#earSkin)" stroke="#cf7b55" stroke-width="2" />
+  <path d="M 188 275 C 175 285 178 315 192 322" fill="none" stroke="#b96a45" stroke-width="2" />
+  <!-- Right Ear -->
+  <path d="M 405 255 C 440 255 440 335 402 345 Z" fill="url(#earSkin)" stroke="#cf7b55" stroke-width="2" />
+  <path d="M 412 275 C 425 285 422 315 408 322" fill="none" stroke="#b96a45" stroke-width="2" />
+
+  <!-- 9. Head & Facial Structure (Young Asian male, jawline and cheek shape) -->
+  <path d="M 196 210 C 196 110 404 110 404 210 C 404 300 378 395 300 405 C 222 395 196 300 196 210 Z" fill="url(#skin)" />
+
+  <!-- Soft Cheek Tone -->
+  <ellipse cx="235" cy="305" rx="26" ry="18" fill="#f87171" opacity="0.12" />
+  <ellipse cx="365" cy="305" rx="26" ry="18" fill="#f87171" opacity="0.12" />
+
+  <!-- 10. Eyebrows (Neat, dark, defined arch) -->
+  <!-- Left Brow -->
+  <path d="M 220 236 Q 255 224 278 238" fill="none" stroke="#111827" stroke-width="7" stroke-linecap="round" />
+  <!-- Right Brow -->
+  <path d="M 380 236 Q 345 224 322 238" fill="none" stroke="#111827" stroke-width="7" stroke-linecap="round" />
+
+  <!-- 11. Eyes (Warm dark brown/black eyes with double eyelid contour) -->
+  <!-- Left Eyelid Fold -->
+  <path d="M 228 250 Q 250 242 270 250" fill="none" stroke="#9a4d2e" stroke-width="1.8" />
+  <!-- Left Eye Sclera & Iris -->
+  <ellipse cx="250" cy="260" rx="18" ry="10" fill="#ffffff" />
+  <ellipse cx="250" cy="260" rx="8.5" ry="8.5" fill="#1e293b" />
+  <circle cx="250" cy="260" r="5" fill="#090b10" />
+  <circle cx="253" cy="257" r="2.2" fill="#ffffff" />
+  <!-- Left Upper & Lower Eyelashes -->
+  <path d="M 230 259 Q 250 250 270 259" fill="none" stroke="#090b10" stroke-width="3" stroke-linecap="round" />
+  <path d="M 235 264 Q 250 270 265 264" fill="none" stroke="#b96a45" stroke-width="1.5" />
+
+  <!-- Right Eyelid Fold -->
+  <path d="M 372 250 Q 350 242 330 250" fill="none" stroke="#9a4d2e" stroke-width="1.8" />
+  <!-- Right Eye Sclera & Iris -->
+  <ellipse cx="350" cy="260" rx="18" ry="10" fill="#ffffff" />
+  <ellipse cx="350" cy="260" rx="8.5" ry="8.5" fill="#1e293b" />
+  <circle cx="350" cy="260" r="5" fill="#090b10" />
+  <circle cx="353" cy="257" r="2.2" fill="#ffffff" />
+  <!-- Right Upper & Lower Eyelashes -->
+  <path d="M 330 259 Q 350 250 370 259" fill="none" stroke="#090b10" stroke-width="3" stroke-linecap="round" />
+  <path d="M 335 264 Q 350 270 365 264" fill="none" stroke="#b96a45" stroke-width="1.5" />
+
+  <!-- 12. Nose -->
+  <!-- Nose Bridge Contour -->
+  <path d="M 296 245 L 292 305 Q 288 322 300 324 Q 312 322 308 305 Z" fill="#d97c55" opacity="0.35" />
+  <path d="M 288 316 Q 300 326 312 316" fill="none" stroke="#9a4d2e" stroke-width="2.5" stroke-linecap="round" />
+  <!-- Nostrils -->
+  <ellipse cx="284" cy="316" rx="4" ry="2.2" fill="#6c2d15" opacity="0.7" />
+  <ellipse cx="316" cy="316" rx="4" ry="2.2" fill="#6c2d15" opacity="0.7" />
+
+  <!-- 13. Subtle Mustache (As in the photo) -->
+  <path d="M 280 336 Q 290 333 300 337 Q 310 333 320 336" fill="none" stroke="#1f2937" stroke-width="3" stroke-linecap="round" opacity="0.8" />
+
+  <!-- 14. Lips (Natural soft pink/warm tone) -->
+  <path d="M 276 354 Q 300 350 324 354" fill="none" stroke="#b91c1c" stroke-width="2.5" stroke-linecap="round" />
+  <path d="M 278 354 Q 300 368 322 354" fill="#ef4444" opacity="0.35" />
+  <path d="M 284 354 Q 300 348 316 354" fill="#dc2626" opacity="0.3" />
+
+  <!-- Chin Dimple / Indent -->
+  <path d="M 294 380 Q 300 384 306 380" fill="none" stroke="#9a4d2e" stroke-width="1.8" stroke-linecap="round" opacity="0.5" />
+
+  <!-- 15. Hair: Voluminous Black Textured Cut with Forward Styled Bangs (Exact style as the photo) -->
+  <!-- Top Volume Base -->
+  <path d="M 180 220 C 170 100 230 40 300 40 C 370 40 430 100 420 220 C 435 190 430 120 400 80 C 370 50 330 42 300 45 C 250 50 200 80 185 130 C 176 165 178 195 180 220 Z" fill="url(#hair)" />
+
+  <!-- Thick Hair Shell -->
+  <path d="M 185 180 C 195 120 240 85 300 85 C 360 85 405 120 415 180 C 410 205 385 220 355 208 C 320 222 280 216 245 212 C 215 218 195 205 185 180 Z" fill="url(#hair)" />
+
+  <!-- Forward-Combed Bangs / Fringe Over Forehead -->
+  <path d="M 188 185 C 205 210 240 202 265 195 C 290 205 325 202 360 188 C 385 202 410 188 412 180 C 395 202 370 214 340 206 C 305 218 265 212 230 208 C 210 214 195 204 188 185 Z" fill="#090b10" />
+
+  <!-- Textured Strands & Highlights on Hair -->
+  <path d="M 215 80 Q 260 65 310 75" fill="none" stroke="#475569" stroke-width="4" opacity="0.4" stroke-linecap="round" />
+  <path d="M 240 105 Q 285 92 345 105" fill="none" stroke="#475569" stroke-width="3" opacity="0.35" stroke-linecap="round" />
+  <path d="M 270 130 Q 315 120 370 135" fill="none" stroke="#475569" stroke-width="3" opacity="0.3" stroke-linecap="round" />
+  <path d="M 220 150 Q 255 140 290 148" fill="none" stroke="#334155" stroke-width="3" opacity="0.3" stroke-linecap="round" />
+
+  <!-- Left & Right Sideburns -->
+  <polygon points="194,220 198,270 205,270 202,220" fill="#0d0e12" />
+  <polygon points="406,220 402,270 395,270 398,220" fill="#0d0e12" />
+</svg>

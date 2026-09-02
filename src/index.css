@@ -21,6 +21,41 @@
   }
 }
 
+/* Global Smooth Theme Switching Transitions */
+@media (prefers-reduced-motion: no-preference) {
+  html,
+  body,
+  header,
+  nav,
+  footer,
+  section,
+  main,
+  aside,
+  article,
+  div,
+  span,
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  a,
+  button,
+  input,
+  textarea,
+  select,
+  table,
+  tr,
+  td,
+  th {
+    transition-property: background-color, border-color, color, fill, stroke, box-shadow;
+    transition-duration: 260ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Outfit', 'Kantumruy Pro', sans-serif;
 }

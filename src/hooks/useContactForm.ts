@@ -1,15 +1,14 @@
 import { useState, useCallback, ChangeEvent, FormEvent } from 'react';
 import confetti from 'canvas-confetti';
 import { submitContactInquiry } from '../services/firestoreService';
+import { 
+  contactSchema, 
+  ContactFormData, 
+  validateFieldWithZod, 
+  validateFormWithZod 
+} from '../schemas/contactSchema';
 
-export interface ContactFormValues {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-  honeypot?: string;
-}
-
+export type ContactFormValues = ContactFormData;
 export type FormErrors = Partial<Record<keyof ContactFormValues, string>>;
 export type FormTouched = Partial<Record<keyof ContactFormValues, boolean>>;
 export type SubmissionStatus = 'idle' | 'loading' | 'success' | 'error';
@@ -28,64 +27,20 @@ const DEFAULT_INITIAL_VALUES: ContactFormValues = {
   honeypot: ''
 };
 
-const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
-
 let lastSubmissionTime = 0;
 
 /**
- * Validates a single field or all form fields
+ * Validates a single field using Zod schema
  */
 export function validateContactField(name: keyof ContactFormValues, value: string): string | undefined {
-  const trimmed = value.trim();
-
-  switch (name) {
-    case 'name':
-      if (!trimmed) return 'Your name is required';
-      if (trimmed.length < 2) return 'Name must be at least 2 characters';
-      if (trimmed.length > 80) return 'Name cannot exceed 80 characters';
-      return undefined;
-
-    case 'email':
-      if (!trimmed) return 'Email address is required';
-      if (!EMAIL_REGEX.test(trimmed)) return 'Please enter a valid email address';
-      return undefined;
-
-    case 'subject':
-      if (!trimmed) return 'Subject line is required';
-      if (trimmed.length < 3) return 'Subject must be at least 3 characters';
-      if (trimmed.length > 120) return 'Subject cannot exceed 120 characters';
-      return undefined;
-
-    case 'message':
-      if (!trimmed) return 'Message content is required';
-      if (trimmed.length < 15) return 'Message must be at least 15 characters';
-      if (trimmed.length > 2000) return 'Message cannot exceed 2,000 characters';
-      return undefined;
-
-    default:
-      return undefined;
-  }
+  return validateFieldWithZod(name, value);
 }
 
 /**
- * Validates the full form payload
+ * Validates the full form payload using Zod schema
  */
 export function validateContactForm(values: ContactFormValues): FormErrors {
-  const errors: FormErrors = {};
-
-  const nameError = validateContactField('name', values.name);
-  if (nameError) errors.name = nameError;
-
-  const emailError = validateContactField('email', values.email);
-  if (emailError) errors.email = emailError;
-
-  const subjectError = validateContactField('subject', values.subject);
-  if (subjectError) errors.subject = subjectError;
-
-  const messageError = validateContactField('message', values.message);
-  if (messageError) errors.message = messageError;
-
-  return errors;
+  return validateFormWithZod(values);
 }
 
 /**

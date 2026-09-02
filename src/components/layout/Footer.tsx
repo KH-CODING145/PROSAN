@@ -1,17 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { siteConfig } from '../../config/siteConfig';
+import { NewsletterSubscribe } from './NewsletterSubscribe';
 import { 
   Linkedin, 
   Youtube, 
   Send, 
-  Facebook,
-  Instagram,
-  MessageCircle,
+  Facebook, 
+  Instagram, 
+  MessageCircle, 
   Mail, 
   ArrowUp, 
-  Terminal,
-  Code
+  Terminal, 
+  Code 
 } from 'lucide-react';
 
 export const Footer: React.FC = () => {
@@ -22,7 +23,7 @@ export const Footer: React.FC = () => {
   const socialLinks = [
     { name: 'Telegram', icon: Send, href: siteConfig.profile.social.telegram || 'https://t.me/kim_san145' },
     { name: 'Facebook', icon: Facebook, href: siteConfig.profile.social.facebook || 'https://t.me/kim_san145' },
-    { name: 'YouTube', icon: Youtube, href: siteConfig.profile.social.youtube || 'https://t.me/kim_san145' },
+    { name: 'YouTube', icon: Youtube, href: siteConfig.profile.social.youtube || 'https://youtube.com/@kimsan2000' },
     { name: 'Instagram', icon: Instagram, href: siteConfig.profile.social.instagram || 'https://t.me/kim_san145' },
     { name: 'WhatsApp', icon: MessageCircle, href: siteConfig.profile.social.whatsapp || 'https://t.me/kim_san145' },
     { name: 'LinkedIn', icon: Linkedin, href: siteConfig.profile.social.linkedin },
@@ -31,8 +32,11 @@ export const Footer: React.FC = () => {
 
   return (
     <footer className="bg-slate-100 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-850 pt-16 pb-12 transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-10 lg:gap-12 mb-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        {/* Newsletter Subscription Bar */}
+        <NewsletterSubscribe />
+
+        <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-10 lg:gap-12 pt-4">
           {/* Brand Col */}
           <div className="md:col-span-2 space-y-4">
             <Link to="/" className="flex items-center gap-2.5 inline-flex">

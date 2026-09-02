@@ -12,6 +12,7 @@ import { MobileBottomNav } from './components/layout/MobileBottomNav';
 import { Footer } from './components/layout/Footer';
 import { ScrollToTop } from './components/layout/ScrollToTop';
 import { FloatingScrollTop } from './components/layout/FloatingScrollTop';
+import { ScrollProgressIndicator } from './components/common/ScrollProgressIndicator';
 
 // Pages
 import { Home } from './pages/Home';
@@ -39,6 +40,7 @@ export default function App() {
       <AuthProvider>
         <Router>
           <ScrollToTop />
+          <ScrollProgressIndicator />
           <div className="flex flex-col min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200 selection:bg-cyan-500 selection:text-white">
             <Navbar />
             <div className="flex-1 pb-16 md:pb-0">

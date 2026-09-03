@@ -8,8 +8,11 @@ import { Button } from '../components/common/Button';
 import { Modal } from '../components/common/Modal';
 import { RelatedProjects } from '../components/projects/RelatedProjects';
 import { ShareProjectButton } from '../components/projects/ShareProjectButton';
+import { ViewCountBadge } from '../components/common/ViewCountBadge';
+import { CodeBlock } from '../components/common/CodeBlock';
 import { usePrefersReducedMotion } from '../hooks/useScrollReveal';
 import { siteConfig } from '../config/siteConfig';
+import { generateProjectDetailSchema } from '../utils/seoSchemas';
 import { 
   ArrowLeft, 
   ExternalLink, 
@@ -19,20 +22,32 @@ import {
   Lightbulb, 
   TrendingUp, 
   Calendar, 
+  Clock,
   User, 
   Cpu, 
   Server, 
   Database, 
   Cloud, 
   Eye,
-  Share2
+  Share2,
+  Github,
+  Terminal,
+  Copy,
+  Check
 } from 'lucide-react';
 
 export const ProjectDetails: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [copiedArchKey, setCopiedArchKey] = useState<string | null>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
+
+  const handleCopyArch = (key: string, text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedArchKey(key);
+    setTimeout(() => setCopiedArchKey(null), 2000);
+  };
 
   const project = projectsData.find((p) => p.slug === slug);
 
@@ -75,43 +90,30 @@ export const ProjectDetails: React.FC = () => {
   };
 
   const projectCanonicalUrl = `${siteConfig.siteUrl}/projects/${project.slug}`;
-  const projectSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'TechArticle',
-    headline: `${project.title} — Software Architecture & Case Study`,
-    description: project.shortDescription,
-    image: project.image,
-    author: {
-      '@type': 'Person',
-      name: siteConfig.profile.name,
-      url: siteConfig.siteUrl,
-    },
-    publisher: {
-      '@type': 'Person',
-      name: siteConfig.profile.name,
-    },
-    keywords: [project.category, ...project.technologies, 'Software Architecture', 'Case Study'].join(', '),
-    articleSection: project.category,
-    mainEntityOfPage: {
-      '@type': 'WebPage',
-      '@id': projectCanonicalUrl,
-    },
-    datePublished: '2024-01-01T00:00:00Z',
-  };
+  const projectSchema = generateProjectDetailSchema(project);
 
   return (
     <PageContainer
-      title={`${project.title} — Case Study`}
+      title={`${project.title} — Software Architecture & Case Study`}
       description={project.shortDescription}
       canonicalUrl={projectCanonicalUrl}
       type="article"
       image={project.image}
-      imageAlt={`${project.title} screenshot and architectural preview`}
-      keywords={[project.title, project.category, ...project.technologies, 'Software Engineering', 'PRO SAN']}
+      imageAlt={`${project.title} - Architecture and System Design by ${siteConfig.profile.name}`}
+      keywords={[
+        project.title,
+        project.category,
+        ...project.technologies,
+        'Software Architecture',
+        'Case Study',
+        'System Design',
+        'Production Engineering',
+        siteConfig.profile.name
+      ]}
       author={siteConfig.profile.name}
       section={project.category}
       tags={project.technologies}
-      publishedTime="2024-01-01T00:00:00Z"
+      publishedTime="2025-01-01T00:00:00Z"
       schema={projectSchema}
     >
       <motion.div
@@ -122,7 +124,7 @@ export const ProjectDetails: React.FC = () => {
         className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16"
       >
         {/* Navigation Breadcrumb / Back */}
-        <motion.div variants={itemVariants}>
+        <motion.div variants={itemVariants} className="flex items-center justify-between">
           <Link
             to="/projects"
             className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
@@ -130,6 +132,12 @@ export const ProjectDetails: React.FC = () => {
             <ArrowLeft className="w-4 h-4" />
             <span>Back to All Projects</span>
           </Link>
+          <ShareProjectButton 
+            project={project} 
+            variant="ghost" 
+            size="sm" 
+            label="Share"
+          />
         </motion.div>
 
         {/* Hero Header */}
@@ -143,6 +151,12 @@ export const ProjectDetails: React.FC = () => {
                 Featured Production Case Study
               </Badge>
             )}
+            <ViewCountBadge
+              itemId={project.slug}
+              itemType="project"
+              autoIncrement={true}
+              showPopularityBadge={true}
+            />
           </div>
 
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
@@ -154,7 +168,7 @@ export const ProjectDetails: React.FC = () => {
           </p>
 
           {/* Metadata quick stats */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm shadow-xs">
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm shadow-xs">
             <div>
               <p className="text-slate-400 font-mono text-[11px]">Role</p>
               <p className="font-semibold text-slate-900 dark:text-white">{project.role}</p>
@@ -171,12 +185,20 @@ export const ProjectDetails: React.FC = () => {
               <p className="text-slate-400 font-mono text-[11px]">Category</p>
               <p className="font-semibold text-cyan-600 dark:text-cyan-400">{project.category}</p>
             </div>
+            <div>
+              <p className="text-slate-400 font-mono text-[11px]">Est. Read Time</p>
+              <p className="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-cyan-500 shrink-0" />
+                <span>{project.readTime || '5 min read'}</span>
+              </p>
+            </div>
           </div>
 
           {/* Action CTAs */}
           <div className="flex flex-wrap items-center gap-3 pt-2">
             {project.liveDemoUrl && (
               <Button
+                id="project-details-live-demo-btn"
                 variant="primary"
                 asAnchor
                 href={project.liveDemoUrl}
@@ -184,6 +206,18 @@ export const ProjectDetails: React.FC = () => {
                 rightIcon={<ExternalLink className="w-4 h-4" />}
               >
                 Launch Live Demo
+              </Button>
+            )}
+            {project.githubUrl && (
+              <Button
+                id="project-details-github-btn"
+                variant="outline"
+                asAnchor
+                href={project.githubUrl}
+                target="_blank"
+                leftIcon={<Github className="w-4 h-4" />}
+              >
+                Source Code
               </Button>
             )}
             <ShareProjectButton project={project} variant="outline" size="md" />
@@ -200,6 +234,15 @@ export const ProjectDetails: React.FC = () => {
             alt={project.title}
             className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-700 ease-out"
             referrerPolicy="no-referrer"
+          />
+        </motion.div>
+
+        {/* Dynamic Popularity Telemetry Card */}
+        <motion.div variants={itemVariants}>
+          <ViewCountBadge
+            itemId={project.slug}
+            itemType="project"
+            variant="card"
           />
         </motion.div>
 
@@ -243,40 +286,112 @@ export const ProjectDetails: React.FC = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs sm:text-sm">
             {project.architecture.frontend && (
-              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200/60 dark:border-slate-800 space-y-1">
-                <span className="flex items-center gap-1.5 font-semibold text-slate-900 dark:text-white">
-                  <Cpu className="w-4 h-4 text-cyan-500" /> Frontend Layer
-                </span>
+              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200/60 dark:border-slate-800 space-y-1 relative group/card">
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-1.5 font-semibold text-slate-900 dark:text-white">
+                    <Cpu className="w-4 h-4 text-cyan-500" /> Frontend Layer
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleCopyArch('frontend', project.architecture.frontend!)}
+                    className="p-1 rounded-md text-slate-400 hover:text-cyan-500 hover:bg-slate-200/60 dark:hover:bg-slate-700/60 transition-colors"
+                    title="Copy frontend architecture"
+                    aria-label="Copy frontend architecture"
+                  >
+                    {copiedArchKey === 'frontend' ? (
+                      <span className="flex items-center gap-1 text-[11px] text-emerald-400 font-mono">
+                        <Check className="w-3.5 h-3.5" />
+                        <span>Copied</span>
+                      </span>
+                    ) : (
+                      <Copy className="w-3.5 h-3.5" />
+                    )}
+                  </button>
+                </div>
                 <p className="text-slate-600 dark:text-slate-400 font-mono text-xs">
                   {project.architecture.frontend}
                 </p>
               </div>
             )}
             {project.architecture.backend && (
-              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200/60 dark:border-slate-800 space-y-1">
-                <span className="flex items-center gap-1.5 font-semibold text-slate-900 dark:text-white">
-                  <Server className="w-4 h-4 text-blue-500" /> Backend Services
-                </span>
+              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200/60 dark:border-slate-800 space-y-1 relative group/card">
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-1.5 font-semibold text-slate-900 dark:text-white">
+                    <Server className="w-4 h-4 text-blue-500" /> Backend Services
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleCopyArch('backend', project.architecture.backend!)}
+                    className="p-1 rounded-md text-slate-400 hover:text-cyan-500 hover:bg-slate-200/60 dark:hover:bg-slate-700/60 transition-colors"
+                    title="Copy backend architecture"
+                    aria-label="Copy backend architecture"
+                  >
+                    {copiedArchKey === 'backend' ? (
+                      <span className="flex items-center gap-1 text-[11px] text-emerald-400 font-mono">
+                        <Check className="w-3.5 h-3.5" />
+                        <span>Copied</span>
+                      </span>
+                    ) : (
+                      <Copy className="w-3.5 h-3.5" />
+                    )}
+                  </button>
+                </div>
                 <p className="text-slate-600 dark:text-slate-400 font-mono text-xs">
                   {project.architecture.backend}
                 </p>
               </div>
             )}
             {project.architecture.database && (
-              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200/60 dark:border-slate-800 space-y-1">
-                <span className="flex items-center gap-1.5 font-semibold text-slate-900 dark:text-white">
-                  <Database className="w-4 h-4 text-purple-500" /> Data Storage & Cache
-                </span>
+              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200/60 dark:border-slate-800 space-y-1 relative group/card">
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-1.5 font-semibold text-slate-900 dark:text-white">
+                    <Database className="w-4 h-4 text-purple-500" /> Data Storage & Cache
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleCopyArch('database', project.architecture.database!)}
+                    className="p-1 rounded-md text-slate-400 hover:text-cyan-500 hover:bg-slate-200/60 dark:hover:bg-slate-700/60 transition-colors"
+                    title="Copy database architecture"
+                    aria-label="Copy database architecture"
+                  >
+                    {copiedArchKey === 'database' ? (
+                      <span className="flex items-center gap-1 text-[11px] text-emerald-400 font-mono">
+                        <Check className="w-3.5 h-3.5" />
+                        <span>Copied</span>
+                      </span>
+                    ) : (
+                      <Copy className="w-3.5 h-3.5" />
+                    )}
+                  </button>
+                </div>
                 <p className="text-slate-600 dark:text-slate-400 font-mono text-xs">
                   {project.architecture.database}
                 </p>
               </div>
             )}
             {project.architecture.aiOrCloud && (
-              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200/60 dark:border-slate-800 space-y-1">
-                <span className="flex items-center gap-1.5 font-semibold text-slate-900 dark:text-white">
-                  <Cloud className="w-4 h-4 text-emerald-500" /> AI Pipeline & Cloud
-                </span>
+              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200/60 dark:border-slate-800 space-y-1 relative group/card">
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-1.5 font-semibold text-slate-900 dark:text-white">
+                    <Cloud className="w-4 h-4 text-emerald-500" /> AI Pipeline & Cloud
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleCopyArch('aiOrCloud', project.architecture.aiOrCloud!)}
+                    className="p-1 rounded-md text-slate-400 hover:text-cyan-500 hover:bg-slate-200/60 dark:hover:bg-slate-700/60 transition-colors"
+                    title="Copy cloud architecture"
+                    aria-label="Copy cloud architecture"
+                  >
+                    {copiedArchKey === 'aiOrCloud' ? (
+                      <span className="flex items-center gap-1 text-[11px] text-emerald-400 font-mono">
+                        <Check className="w-3.5 h-3.5" />
+                        <span>Copied</span>
+                      </span>
+                    ) : (
+                      <Copy className="w-3.5 h-3.5" />
+                    )}
+                  </button>
+                </div>
                 <p className="text-slate-600 dark:text-slate-400 font-mono text-xs">
                   {project.architecture.aiOrCloud}
                 </p>
@@ -296,6 +411,36 @@ export const ProjectDetails: React.FC = () => {
             </div>
           </div>
         </motion.div>
+
+        {/* Technical Implementation & Architecture Code Snippet */}
+        {project.codeSnippet && (
+          <motion.div
+            variants={itemVariants}
+            className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-4"
+          >
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400">
+                <Terminal className="w-5 h-5" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+                  Technical Implementation & Code Architecture
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+                  {project.codeSnippet.description || 'Core algorithm, pipeline architecture, and verified implementation'}
+                </p>
+              </div>
+            </div>
+
+            <CodeBlock
+              id={`project-code-snippet-${project.slug}`}
+              code={project.codeSnippet.code}
+              language={project.codeSnippet.language}
+              title={project.codeSnippet.title || `${project.slug}.${project.codeSnippet.language === 'python' ? 'py' : 'ts'}`}
+              subtitle="Verified Production Implementation"
+            />
+          </motion.div>
+        )}
 
         {/* Key Features */}
         <motion.div

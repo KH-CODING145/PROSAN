@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { PageContainer } from '../components/layout/PageContainer';
 import { siteConfig } from '../config/siteConfig';
+import { generatePersonSchema, generateBreadcrumbSchema } from '../utils/seoSchemas';
 import { experienceData } from '../data/experience';
 import { educationData } from '../data/education';
 import { projectsData } from '../data/projects';
@@ -96,10 +97,46 @@ export const About: React.FC = () => {
   const [resumeOpen, setResumeOpen] = useState(false);
   const profile = siteConfig.profile;
 
+  const aboutSchema = useMemo(() => {
+    return {
+      '@graph': [
+        generatePersonSchema(),
+        generateBreadcrumbSchema([
+          { name: 'Home', url: '/' },
+          { name: 'About', url: '/about' }
+        ]),
+        {
+          '@type': 'AboutPage',
+          '@id': `${siteConfig.siteUrl}/about/#webpage`,
+          url: `${siteConfig.siteUrl}/about`,
+          name: `About Me — Engineering Philosophy & Story | ${siteConfig.profile.name}`,
+          description: `Discover the background, technical philosophy, and 6+ years of engineering experience of ${siteConfig.profile.name}.`,
+          mainEntity: {
+            '@id': `${siteConfig.siteUrl}/#person`
+          }
+        }
+      ]
+    };
+  }, []);
+
   return (
     <PageContainer
-      title="PRO SAN — Senior Software Engineer & AI Developer"
-      description="“I don't just write code. I design systems.” 6+ Years Production Experience in Full-Stack, AI Agents, RAG, and Cloud Platforms."
+      title="About Me — Engineering Philosophy & Story"
+      description="“I don't just write code. I design systems.” 6+ Years Production Experience in Full-Stack, AI Agents, RAG, and Cloud Platforms by PRO SAN."
+      canonicalUrl={`${siteConfig.siteUrl}/about`}
+      type="profile"
+      keywords={[
+        'About PRO SAN',
+        'Software Engineer Biography',
+        'Tech Stack',
+        'Engineering Principles',
+        'AI Architect',
+        'Cambodia Developer',
+        'PRO SAN'
+      ]}
+      image={profile.avatar}
+      imageAlt={`PRO SAN - ${profile.title}`}
+      schema={aboutSchema}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24">
         

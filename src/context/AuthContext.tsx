@@ -23,6 +23,7 @@ const DEMO_USER_KEY = 'prosan_auth_user';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(() => {
+    if (typeof window === 'undefined') return null;
     try {
       const saved = localStorage.getItem(DEMO_USER_KEY);
       return saved ? JSON.parse(saved) : null;

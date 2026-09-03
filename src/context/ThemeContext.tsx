@@ -12,6 +12,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [theme, setThemeState] = useState<ThemeMode>(() => {
+    if (typeof window === 'undefined') return 'dark';
     try {
       const saved = localStorage.getItem('portfolio-theme') as ThemeMode;
       if (saved === 'dark' || saved === 'light' || saved === 'system') {

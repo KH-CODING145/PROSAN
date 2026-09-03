@@ -16,6 +16,21 @@ service cloud.firestore {
       allow read: if true;
     }
     
+    // View Counts: Dynamic popularity telemetry for projects and articles
+    match /view_counts/{viewId} {
+      allow read: if true;
+      allow create: if request.resource.data.views is number 
+                    && request.resource.data.views >= 1
+                    && request.resource.data.itemId is string
+                    && request.resource.data.itemId.size() <= 128
+                    && (request.resource.data.itemType == 'project' || request.resource.data.itemType == 'article');
+      allow update: if request.resource.data.views is number
+                    && request.resource.data.views >= resource.data.views
+                    && request.resource.data.itemId == resource.data.itemId
+                    && request.resource.data.itemType == resource.data.itemType
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['views', 'lastViewedAt', 'updatedAt']);
+    }
+    
     // General read access for portfolio content collections
     match /{document=**} {
       allow read: if true;

@@ -2,8 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTheme } from '../../context/ThemeContext';
+import { useI18n } from '../../context/I18nContext';
 import { siteConfig } from '../../config/siteConfig';
 import { ResumeModal } from '../resume/ResumeModal';
+import { LanguageSwitcher } from '../common/LanguageSwitcher';
+import { useSearch } from '../../context/SearchContext';
 import { 
   Sun, 
   Moon, 
@@ -12,12 +15,17 @@ import {
   X, 
   Terminal, 
   FileText, 
-  Send
+  Send,
+  Github,
+  Linkedin,
+  Search
 } from 'lucide-react';
 import { cn } from '../../utils/cn';
 
 export const Navbar: React.FC = () => {
   const { theme, resolvedTheme, setTheme } = useTheme();
+  const { t } = useI18n();
+  const { openSearch, isMac } = useSearch();
   const location = useLocation();
 
   const [isScrolled, setIsScrolled] = useState(false);
@@ -26,6 +34,23 @@ export const Navbar: React.FC = () => {
   const [resumeModalOpen, setResumeModalOpen] = useState(false);
 
   const themeRef = useRef<HTMLDivElement>(null);
+
+  const getNavLabel = (href: string, fallback: string) => {
+    switch (href) {
+      case '/': return t('nav.home', fallback);
+      case '/about': return t('nav.about', fallback);
+      case '/skills': return t('nav.skills', fallback);
+      case '/experience': return t('nav.experience', fallback);
+      case '/projects': return t('nav.projects', fallback);
+      case '/services': return t('nav.services', fallback);
+      case '/education': return t('nav.education', fallback);
+      case '/certificates': return t('nav.certificates', fallback);
+      case '/blog': return t('nav.blog', fallback);
+      case '/contact': return t('nav.contact', fallback);
+      case '/resume': return t('nav.resume', fallback);
+      default: return fallback;
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -127,7 +152,7 @@ export const Navbar: React.FC = () => {
                         transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                       />
                     )}
-                    <span className="relative z-10">{link.name}</span>
+                    <span className="relative z-10">{getNavLabel(link.href, link.name)}</span>
                   </Link>
                 );
               })}
@@ -155,7 +180,7 @@ export const Navbar: React.FC = () => {
                         transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                       />
                     )}
-                    <span className="relative z-10">{link.name}</span>
+                    <span className="relative z-10">{getNavLabel(link.href, link.name)}</span>
                   </Link>
                 );
               })}
@@ -163,21 +188,60 @@ export const Navbar: React.FC = () => {
                 to="/contact"
                 className="px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
               >
-                Contact
+                {t('nav.contact', 'Contact')}
               </Link>
             </nav>
 
-            {/* Right Controls: Resume & Theme Toggle */}
-            <div className="hidden lg:flex items-center gap-2.5 shrink-0">
-              {/* Resume / CV Modal Trigger */}
+            {/* Right Controls: Search, Socials, Resume, Language & Theme Toggle */}
+            <div className="hidden lg:flex items-center gap-2 shrink-0">
+              {/* Global Search Quick Trigger */}
               <button
                 type="button"
-                onClick={() => setResumeModalOpen(true)}
-                className="flex items-center gap-1.5 py-1.5 px-3 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
+                onClick={() => openSearch()}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100/90 dark:bg-slate-850/90 hover:bg-slate-200/90 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all group shadow-2xs"
+                title={`Search projects, articles, skills (${isMac ? '⌘K' : 'Ctrl+K'})`}
+                aria-label="Search portfolio"
+              >
+                <Search className="w-3.5 h-3.5 text-cyan-500 group-hover:scale-110 transition-transform" />
+                <span className="hidden xl:inline text-xs font-medium">Search...</span>
+                <kbd className="px-1.5 py-0.5 text-[10px] font-mono rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-750 text-slate-400 dark:text-slate-500 group-hover:text-cyan-500 transition-colors shadow-2xs">
+                  {isMac ? '⌘K' : 'Ctrl+K'}
+                </kbd>
+              </button>
+
+              {/* GitHub Quick Link */}
+              <a
+                href={siteConfig.profile.social.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub Profile"
+                className="p-1.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:text-cyan-500 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
+              >
+                <Github className="w-4 h-4" />
+              </a>
+
+              {/* LinkedIn Quick Link */}
+              <a
+                href={siteConfig.profile.social.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn Profile"
+                className="p-1.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:text-blue-500 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
+              >
+                <Linkedin className="w-4 h-4" />
+              </a>
+
+              {/* Resume Button */}
+              <Link
+                to="/resume"
+                className="flex items-center gap-1.5 py-1.5 px-3 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
               >
                 <FileText className="w-3.5 h-3.5 text-cyan-500" />
-                <span>Resume / CV</span>
-              </button>
+                <span>{t('nav.resume', 'Resume')}</span>
+              </Link>
+
+              {/* Language Switcher */}
+              <LanguageSwitcher />
 
               {/* Theme Switcher Dropdown */}
               <div className="relative" ref={themeRef}>
@@ -238,7 +302,21 @@ export const Navbar: React.FC = () => {
             </div>
 
             {/* Mobile Actions */}
-            <div className="flex lg:hidden items-center gap-2">
+            <div className="flex lg:hidden items-center gap-1.5 sm:gap-2">
+              {/* Quick Search trigger */}
+              <button
+                type="button"
+                onClick={() => openSearch()}
+                aria-label="Search portfolio"
+                className="w-10 h-10 flex items-center justify-center rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 transition-colors"
+                title="Search"
+              >
+                <Search className="w-4 h-4 text-cyan-500" />
+              </button>
+
+              {/* Quick Language Toggle */}
+              <LanguageSwitcher variant="toggle" />
+
               {/* Quick theme toggle */}
               <button
                 onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
@@ -275,8 +353,34 @@ export const Navbar: React.FC = () => {
               className="lg:hidden border-b border-slate-200 dark:border-slate-800 bg-white/98 dark:bg-slate-950/98 backdrop-blur-2xl px-4 pt-3 pb-6 shadow-2xl max-h-[85vh] overflow-y-auto"
             >
               <div className="flex flex-col gap-1">
+                {/* Language Switcher in Mobile Drawer */}
+                <div className="flex items-center justify-between px-3 py-2 border-b border-slate-100 dark:border-slate-800 mb-2">
+                  <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-400">
+                    {t('lang.label', 'Language')}
+                  </span>
+                  <LanguageSwitcher variant="segmented" />
+                </div>
+
+                {/* Quick Search in Mobile Drawer */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    openSearch();
+                  }}
+                  className="w-full mb-3 px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400 flex items-center justify-between hover:bg-slate-200/70 dark:hover:bg-slate-850 transition-colors"
+                >
+                  <span className="flex items-center gap-2">
+                    <Search className="w-4 h-4 text-cyan-500" />
+                    <span>Search projects, articles, skills...</span>
+                  </span>
+                  <kbd className="px-1.5 py-0.5 text-[10px] font-mono rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-400">
+                    {isMac ? '⌘K' : 'Ctrl+K'}
+                  </kbd>
+                </button>
+
                 <div className="px-3 py-1 text-[11px] font-mono font-bold uppercase tracking-wider text-slate-400">
-                  Navigation
+                  {t('nav.navigation', 'Navigation')}
                 </div>
 
                 {mobileMenu.map((link) => {
@@ -294,7 +398,7 @@ export const Navbar: React.FC = () => {
                           : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900'
                       )}
                     >
-                      <span>{link.name}</span>
+                      <span>{getNavLabel(link.href, link.name)}</span>
                       {isActive && <span className="w-1.5 h-1.5 rounded-full bg-cyan-500" />}
                     </Link>
                   );
@@ -311,7 +415,7 @@ export const Navbar: React.FC = () => {
                     className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center justify-center gap-1.5"
                   >
                     <FileText className="w-3.5 h-3.5 text-blue-500" />
-                    <span>Resume / CV</span>
+                    <span>{t('nav.resumeCv', 'Resume / CV')}</span>
                   </button>
                   <Link
                     to="/contact"
@@ -319,7 +423,7 @@ export const Navbar: React.FC = () => {
                     className="w-full p-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-xs font-semibold flex items-center justify-center gap-1.5 shadow-md shadow-cyan-500/20"
                   >
                     <Send className="w-3.5 h-3.5" />
-                    <span>Get in Touch</span>
+                    <span>{t('nav.getInTouch', 'Get in Touch')}</span>
                   </Link>
                 </div>
               </div>

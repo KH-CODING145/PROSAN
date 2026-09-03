@@ -1,8 +1,11 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { PageContainer } from '../components/layout/PageContainer';
 import { skillsData } from '../data/skills';
 import { SkillCategoryCard } from '../components/skills/SkillCategoryCard';
 import { SectionTitle } from '../components/common/SectionTitle';
+import { generateSkillsCatalogSchema } from '../utils/seoSchemas';
+import { siteConfig } from '../config/siteConfig';
 import { 
   Search, 
   Sparkles, 
@@ -40,9 +43,22 @@ const levels: ('All' | SkillLevel)[] = [
 ];
 
 export const SkillsPage: React.FC = () => {
+  const [searchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedLevel, setSelectedLevel] = useState<'All' | SkillLevel>('All');
+
+  // Sync state with URL params when accessed via global search
+  useEffect(() => {
+    const q = searchParams.get('q');
+    const cat = searchParams.get('category');
+    if (q) {
+      setSearchQuery(q);
+    }
+    if (cat && (categories as readonly string[]).includes(cat)) {
+      setSelectedCategory(cat);
+    }
+  }, [searchParams]);
 
   const totalSkillsCount = useMemo(() => {
     return skillsData.reduce((acc, g) => acc + g.skills.length, 0);
@@ -76,10 +92,32 @@ export const SkillsPage: React.FC = () => {
       .filter((group) => group.skills.length > 0);
   }, [searchQuery, selectedCategory, selectedLevel]);
 
+  const skillsCatalogSchema = useMemo(() => generateSkillsCatalogSchema(skillsData), []);
+
   return (
     <PageContainer
-      title="Technical Skills & Competency Matrix"
-      description="Deep dive into full-stack frameworks, AI LLM integrations, cloud infrastructure, databases, and DevOps tooling."
+      title="Technical Skills Matrix & Architecture Expertise"
+      description="Interactive breakdown of proficiency across languages, backend frameworks, cloud infrastructure, AI models, and DevOps by PRO SAN."
+      canonicalUrl={`${siteConfig.siteUrl}/skills`}
+      type="website"
+      keywords={[
+        'Skills Matrix',
+        'TypeScript',
+        'Python',
+        'React 19',
+        'Docker',
+        'Kubernetes',
+        'LLM Engineering',
+        'RAG Architecture',
+        'PostgreSQL',
+        'FastAPI',
+        'Full Stack Architecture',
+        'DevOps',
+        'PRO SAN'
+      ]}
+      image="/images/og-preview.png"
+      imageAlt="PRO SAN Technical Skills Matrix and Competency Architecture"
+      schema={skillsCatalogSchema}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         <SectionTitle

@@ -2,117 +2,117 @@ import { ServiceItem } from '../types';
 
 export const servicesData: ServiceItem[] = [
   {
-    id: 'srv-1',
-    title: 'Full-Stack Web Development',
-    subtitle: 'End-to-end web applications with modern architecture',
-    description: 'Engineering responsive, high-performance web systems using React 19, TypeScript, and Node.js/Python microservices designed for enterprise scalability.',
+    id: 'srv-01',
+    title: 'Web Development',
+    subtitle: 'Modern, responsive, accessible web interfaces',
+    description: 'Crafting responsive, high-performance web applications using React, TypeScript, and modern Tailwind CSS with fluid animations, intuitive UX, and sub-second loading speeds.',
     iconName: 'Globe',
     features: [
-      'Single Page & Multi-Page Application Architecture',
-      'Fluid Tailwind CSS design with dark/light theming',
-      'Optimized Core Web Vitals (sub-second LCP, zero CLS)',
-      'Secure authentication, session handling, and RBAC'
+      'Responsive design engineered for all screen sizes',
+      'Modern React & TypeScript component architecture',
+      'Fluid animations with Framer Motion',
+      'SEO optimization, meta tags, and accessibility (WCAG AA)'
     ],
     deliverables: [
-      'Production-ready modular codebase',
-      'Automated CI/CD deployment pipeline',
-      'Lighthouse 95+ performance report',
-      'Full architectural documentation'
+      'Production-ready client codebase',
+      'Pixel-perfect responsive layout',
+      'Lighthouse 95+ performance optimization',
+      'Cross-browser and mobile verified builds'
     ]
   },
   {
-    id: 'srv-2',
-    title: 'Generative AI & LLM Systems',
-    subtitle: 'Custom intelligence, agents, and RAG pipelines',
-    description: 'Integrating Gemini and OpenAI APIs, autonomous agent workflows, semantic vector retrieval, and deterministic structured outputs into production software.',
-    iconName: 'Sparkles',
-    features: [
-      'Multi-agent orchestration & LangGraph pipelines',
-      'Vector database setup (pgvector, Pinecone) for RAG',
-      'Structured schema extraction & prompt engineering',
-      'Token expenditure and latency optimization'
-    ],
-    deliverables: [
-      'Production LLM wrapper API service',
-      'Vector indexing & ingestion pipeline',
-      'Evaluation test harness for hallucinations',
-      'Monitoring & token analytics dashboard'
-    ]
-  },
-  {
-    id: 'srv-3',
-    title: 'Workflow & Browser Automation',
-    subtitle: 'High-reliability bots and background task schedulers',
-    description: 'Building headless browser automation, CRM/ERP synchronization engines, and background queues that eliminate repetitive manual workflows.',
-    iconName: 'Cpu',
-    features: [
-      'Headless browser automation with Playwright/Puppeteer',
-      'Self-healing selectors and error recovery mechanisms',
-      'Distributed worker queues with Redis and BullMQ',
-      'Custom webhook event listeners & API transformers'
-    ],
-    deliverables: [
-      'Fault-tolerant automated scripts & cron jobs',
-      'Failure alerting system via Slack/Email/Telegram',
-      'Detailed execution logs & screenshot telemetry',
-      'Comprehensive operator runbook'
-    ]
-  },
-  {
-    id: 'srv-4',
-    title: 'High-Throughput Backend & APIs',
-    subtitle: 'Resilient REST, GraphQL & WebSocket services',
-    description: 'Designing fault-tolerant REST and GraphQL APIs in Node.js, Express, and Python FastAPI with database connection pooling and caching.',
-    iconName: 'Server',
-    features: [
-      'Clean domain-driven architecture & strict validation (Zod)',
-      'Database modeling (PostgreSQL, MongoDB, Redis)',
-      'Zero-trust security, rate limiting, and CORS policies',
-      'Real-time bi-directional WebSockets & event streaming'
-    ],
-    deliverables: [
-      'OpenAPI (Swagger) interactive documentation',
-      'Dockerized container builds ready for cloud deploy',
-      'Database migration scripts & seeders',
-      'Unit & integration test suites (>85% coverage)'
-    ]
-  },
-  {
-    id: 'srv-5',
-    title: 'UI/UX & Design Systems',
-    subtitle: 'Accessible design tokens and reusable component libraries',
-    description: 'Creating accessible, unstyled or tailored React component primitives with strict WCAG 2.1 AAA compliance and mathematical typography scales.',
+    id: 'srv-02',
+    title: 'Full-Stack Development',
+    subtitle: 'End-to-end applications from database to UI',
+    description: 'Building complete web products combining interactive frontends with robust Node.js/Python backends, scalable relational/document databases, and cloud hosting.',
     iconName: 'Layout',
     features: [
-      'Component token systems and fluid typography scales',
-      'Full keyboard navigation & screen-reader accessibility',
-      'Micro-interactions & fluid 60fps animations with Motion',
-      'Figma to production-code fidelity verification'
+      'Complete frontend and backend system integration',
+      'PostgreSQL, MongoDB, SQLite, and Firebase databases',
+      'Secure authentication, authorization, and session management',
+      'Microservice and modular monolithic system design'
     ],
     deliverables: [
-      'Custom reusable component library',
-      'Storybook documentation & live sandbox',
-      'Accessibility audit report',
-      'Design token configuration files'
+      'Comprehensive full-stack codebase',
+      'Database migration schemas and seeders',
+      'Automated deployment setup',
+      'Comprehensive architectural blueprint'
     ]
   },
   {
-    id: 'srv-6',
-    title: 'Cloud Architecture & DevOps',
-    subtitle: 'Containerization, CI/CD, and serverless infrastructure',
-    description: 'Deploying robust cloud-native infrastructure across GCP, AWS, and modern edge platforms with automated continuous delivery and observability.',
-    iconName: 'Cloud',
+    id: 'srv-03',
+    title: 'AI Integration',
+    subtitle: 'Intelligent capabilities powered by Gemini & OpenAI',
+    description: 'Empowering applications with Generative AI capabilities including Gemini 2.5/OpenAI models, multi-agent workflows, semantic vector search, and custom document RAG pipelines.',
+    iconName: 'Sparkles',
     features: [
-      'Docker containerization & multi-stage lean builds',
-      'GitHub Actions automated build, test & deploy pipelines',
-      'Cloud Run, Kubernetes, and serverless hosting',
-      'Telemetry, log aggregation, and uptime alerts'
+      'Gemini API and OpenAI LLM model integrations',
+      'Autonomous multi-agent workflows and function calling',
+      'Retrieval-Augmented Generation (RAG) with vector databases',
+      'Strict structured JSON schema enforcement and prompt design'
     ],
     deliverables: [
-      'Terraform / Docker Compose infrastructure specs',
-      'Zero-downtime deployment pipelines',
-      'Monitoring & alerting configurations',
-      'Disaster recovery & backup procedures'
+      'Production AI service wrapper and endpoints',
+      'Vector indexing and embeddings pipeline',
+      'Hallucination prevention guardrails',
+      'Token expenditure and latency telemetry'
+    ]
+  },
+  {
+    id: 'srv-04',
+    title: 'Automation Software',
+    subtitle: 'Custom bots, scrapers, and automated background tasks',
+    description: 'Eliminating repetitive human tasks through intelligent headless browser automation, background task queues, webhook synchronizations, and data extraction pipelines.',
+    iconName: 'Cpu',
+    features: [
+      'Headless browser automation with Playwright and Puppeteer',
+      'Self-healing selectors and automated DOM recovery',
+      'Scheduled background workers and Redis queues',
+      'Custom webhook triggers and data transformation flows'
+    ],
+    deliverables: [
+      'Automated bot scripts and scheduled cron jobs',
+      'Telegram/Slack/Email notification pipelines',
+      'Execution logs, error captures, and telemetry',
+      'Self-healing resilience mechanisms'
+    ]
+  },
+  {
+    id: 'srv-05',
+    title: 'API Integration',
+    subtitle: 'High-throughput REST, GraphQL & third-party connectors',
+    description: 'Designing resilient RESTful and GraphQL APIs as well as integrating third-party platforms (GitHub API, YouTube Data API, Stripe, Telegram bots, and Firebase).',
+    iconName: 'Server',
+    features: [
+      'Clean domain-driven REST and GraphQL architectures',
+      'Third-party API connectors (GitHub, YouTube, Stripe, Telegram)',
+      'Rate-limiting, API key security, and CORS policies',
+      'Real-time bi-directional WebSockets and Server-Sent Events'
+    ],
+    deliverables: [
+      'OpenAPI/Swagger interactive documentation',
+      'Dockerized containerized API endpoints',
+      'Automated error handling and retries with backoff',
+      'Unit and integration test suites'
+    ]
+  },
+  {
+    id: 'srv-06',
+    title: 'Desktop Application Development',
+    subtitle: 'Cross-platform native desktop solutions',
+    description: 'Developing high-performance cross-platform desktop applications (Electron/Tauri) with local SQLite databases, native OS notifications, and offline-first capabilities.',
+    iconName: 'Cloud',
+    features: [
+      'Cross-platform support for Windows, macOS, and Linux',
+      'Offline-first data persistence with local SQLite and cache',
+      'Native file system access, hotkeys, and system tray integration',
+      'Lean binary sizes with secure sandboxed environments'
+    ],
+    deliverables: [
+      'Installable desktop binaries (.exe, .dmg, .AppImage)',
+      'Auto-update delivery pipeline',
+      'Native OS permission handling',
+      'Local database encryption and backup logic'
     ]
   }
 ];

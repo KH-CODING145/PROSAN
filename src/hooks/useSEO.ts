@@ -137,11 +137,17 @@ export function useSEO(options: SEOOptions = {}) {
     setMetaTag('property', 'og:type', type);
     setMetaTag('property', 'og:url', resolvedCanonical);
     setMetaTag('property', 'og:image', absoluteImage);
+    setMetaTag('property', 'og:image:secure_url', absoluteImage);
+    setMetaTag('property', 'og:image:width', '1200');
+    setMetaTag('property', 'og:image:height', '630');
+    setMetaTag('property', 'og:image:type', absoluteImage.endsWith('.png') ? 'image/png' : 'image/jpeg');
     setMetaTag('property', 'og:site_name', siteConfig.siteName);
     setMetaTag('property', 'og:locale', 'en_US');
 
     if (imageAlt) {
       setMetaTag('property', 'og:image:alt', imageAlt);
+    } else {
+      setMetaTag('property', 'og:image:alt', formattedTitle);
     }
 
     // Article-specific OG tags
@@ -175,56 +181,110 @@ export function useSEO(options: SEOOptions = {}) {
     setMetaTag('name', 'twitter:title', formattedTitle);
     setMetaTag('name', 'twitter:description', description);
     setMetaTag('name', 'twitter:image', absoluteImage);
-    if (imageAlt) setMetaTag('name', 'twitter:image:alt', imageAlt);
+    setMetaTag('name', 'twitter:image:alt', imageAlt || formattedTitle);
     setMetaTag('name', 'twitter:url', resolvedCanonical);
+    setMetaTag('name', 'twitter:site', '@prosandev');
+
     if (siteConfig.profile.social.twitter) {
       const handle = siteConfig.profile.social.twitter.split('/').pop();
       if (handle) setMetaTag('name', 'twitter:creator', `@${handle}`);
+    } else {
+      setMetaTag('name', 'twitter:creator', '@prosandev');
     }
 
     // 6. JSON-LD Structured Data
-    const defaultSchema = {
-      '@context': 'https://schema.org',
-      '@graph': [
-        {
-          '@type': 'Person',
-          '@id': `${siteConfig.siteUrl}/#person`,
-          name: siteConfig.profile.name,
-          jobTitle: siteConfig.profile.title,
-          description: siteConfig.profile.shortBio,
-          url: siteConfig.siteUrl,
-          email: siteConfig.profile.email,
-          sameAs: [
-            siteConfig.profile.social.telegram,
-            siteConfig.profile.social.facebook,
-            siteConfig.profile.social.youtube,
-            siteConfig.profile.social.instagram,
-            siteConfig.profile.social.whatsapp,
-            siteConfig.profile.social.linkedin,
-          ].filter(Boolean)
-        },
-        {
-          '@type': 'WebSite',
-          '@id': `${siteConfig.siteUrl}/#website`,
-          url: siteConfig.siteUrl,
-          name: siteConfig.siteName,
-          description: siteConfig.description,
-          publisher: {
-            '@id': `${siteConfig.siteUrl}/#person`
-          }
-        }
+    const defaultPerson = {
+      '@type': 'Person',
+      '@id': `${siteConfig.siteUrl}/#person`,
+      name: siteConfig.profile.name,
+      givenName: 'PRO',
+      familyName: 'SAN',
+      jobTitle: siteConfig.profile.title,
+      description: siteConfig.profile.shortBio,
+      url: siteConfig.siteUrl,
+      email: siteConfig.profile.email,
+      telephone: siteConfig.profile.phone,
+      image: `${siteConfig.siteUrl}/assets/avatar.svg`,
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Phnom Penh',
+        addressCountry: 'KH'
+      },
+      sameAs: [
+        siteConfig.profile.social.github,
+        siteConfig.profile.social.telegram,
+        siteConfig.profile.social.facebook,
+        siteConfig.profile.social.youtube,
+        siteConfig.profile.social.instagram,
+        siteConfig.profile.social.whatsapp,
+        siteConfig.profile.social.linkedin
+      ].filter(Boolean),
+      knowsAbout: [
+        'Full-Stack Web Development',
+        'React 19 & Next.js',
+        'TypeScript & Modern JavaScript',
+        'Node.js & Python',
+        'Artificial Intelligence & LLMs',
+        'Retrieval-Augmented Generation (RAG)',
+        'Autonomous AI Agents',
+        'PostgreSQL & Vector Databases',
+        'Docker & Cloud Architecture',
+        'System Design & Scalability'
       ]
     };
 
-    const finalSchema = schema ? { ...defaultSchema, ...schema } : defaultSchema;
+    const defaultWebSite = {
+      '@type': 'WebSite',
+      '@id': `${siteConfig.siteUrl}/#website`,
+      url: siteConfig.siteUrl,
+      name: siteConfig.siteName,
+      description: siteConfig.description,
+      inLanguage: 'en-US',
+      publisher: {
+        '@id': `${siteConfig.siteUrl}/#person`
+      }
+    };
 
-    let scriptTag = document.getElementById('json-ld-structured-data') as HTMLScriptElement | null;
+    // Combine into graph cleanly
+    let graphElements: any[] = [defaultPerson, defaultWebSite];
+
+    if (schema) {
+      if (Array.isArray(schema)) {
+        graphElements = [...graphElements, ...schema];
+      } else if (schema['@graph'] && Array.isArray(schema['@graph'])) {
+        // Merge items from provided @graph, avoiding exact duplicate @ids
+        const existingIds = new Set(graphElements.map(e => e['@id']).filter(Boolean));
+        schema['@graph'].forEach((item: any) => {
+          if (!item['@id'] || !existingIds.has(item['@id'])) {
+            graphElements.push(item);
+          }
+        });
+      } else if (schema['@type']) {
+        const { '@context': _unusedContext, ...cleanEntity } = schema;
+        graphElements.push(cleanEntity);
+      } else {
+        graphElements.push(schema);
+      }
+    }
+
+    const finalSchema = {
+      '@context': 'https://schema.org',
+      '@graph': graphElements
+    };
+
+    // Reuse or create JSON-LD script tag
+    let scriptTag = (document.getElementById('json-ld-structured-data') ||
+      document.getElementById('initial-json-ld')) as HTMLScriptElement | null;
+
     if (!scriptTag) {
       scriptTag = document.createElement('script');
       scriptTag.id = 'json-ld-structured-data';
       scriptTag.type = 'application/ld+json';
       document.head.appendChild(scriptTag);
+    } else {
+      scriptTag.id = 'json-ld-structured-data';
     }
+
     scriptTag.text = JSON.stringify(finalSchema, null, 2);
 
   }, [

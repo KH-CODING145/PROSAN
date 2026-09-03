@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'motion/react';
+import { useI18n } from '../../context/I18nContext';
 import { 
   Home, 
   FolderGit2, 
@@ -12,21 +13,23 @@ import {
 import { cn } from '../../utils/cn';
 
 interface NavItem {
+  key: string;
   name: string;
   href: string;
   icon: React.ComponentType<{ className?: string }>;
 }
 
 const navItems: NavItem[] = [
-  { name: 'Home', href: '/', icon: Home },
-  { name: 'Projects', href: '/projects', icon: FolderGit2 },
-  { name: 'Skills', href: '/skills', icon: Cpu },
-  { name: 'Experience', href: '/experience', icon: Briefcase },
-  { name: 'Contact', href: '/contact', icon: Mail },
+  { key: 'nav.home', name: 'Home', href: '/', icon: Home },
+  { key: 'nav.projects', name: 'Projects', href: '/projects', icon: FolderGit2 },
+  { key: 'nav.skills', name: 'Skills', href: '/skills', icon: Cpu },
+  { key: 'nav.experience', name: 'Experience', href: '/experience', icon: Briefcase },
+  { key: 'nav.contact', name: 'Contact', href: '/contact', icon: Mail },
 ];
 
 export const MobileBottomNav: React.FC = () => {
   const location = useLocation();
+  const { t } = useI18n();
 
   // Check active route including nested sub-routes
   const isItemActive = (href: string) => {
@@ -69,7 +72,7 @@ export const MobileBottomNav: React.FC = () => {
               )}
               <Icon className={cn('w-5 h-5 transition-transform duration-200', active ? 'scale-110' : 'scale-100')} />
               <span className="text-[10px] font-medium tracking-tight mt-0.5 whitespace-nowrap">
-                {item.name}
+                {t(item.key, item.name)}
               </span>
               {active && (
                 <span className="absolute bottom-1 w-1 h-1 rounded-full bg-cyan-500" />

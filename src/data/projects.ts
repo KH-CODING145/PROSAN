@@ -18,6 +18,7 @@ export const projectsData: Project[] = [
     githubUrl: 'https://github.com',
     liveDemoUrl: 'https://prosan.dev',
     featured: true,
+    readTime: '5 min read',
     role: 'AI Engineer / Full-Stack Engineer',
     timeline: 'Production System (2025 - 2026)',
     client: 'Enterprise AI & Knowledge Base',
@@ -53,7 +54,39 @@ export const projectsData: Project[] = [
       { label: 'Retrieval Speed', value: '<250ms' },
       { label: 'Document Accuracy', value: '99.2%' },
       { label: 'User Satisfaction', value: '100%' }
-    ]
+    ],
+    codeSnippet: {
+      language: 'python',
+      title: 'rag_query_pipeline.py',
+      description: 'Hybrid vector search & LLM context synthesis pipeline',
+      code: `@router.post("/v1/rag/query", response_model=QueryResponse)
+async def execute_rag_pipeline(
+    request: QueryRequest,
+    db: AsyncSession = Depends(get_db_session)
+):
+    """
+    Executes dense embedding generation, pgvector cosine search,
+    and returns verified contextual citations with LLM synthesis.
+    """
+    # 1. Generate query embedding via Gemini / text-embedding-004
+    query_vector = await embedding_service.embed_query(request.prompt)
+    
+    # 2. Perform HNSW vector similarity search with threshold gating
+    stmt = (
+        select(DocumentChunk)
+        .where(DocumentChunk.kb_id == request.knowledge_base_id)
+        .order_by(DocumentChunk.embedding.cosine_distance(query_vector))
+        .limit(request.top_k or 5)
+    )
+    results = await db.execute(stmt)
+    chunks = results.scalars().all()
+    
+    # 3. Stream generated response with grounded citation spans
+    return StreamingResponse(
+        llm_service.stream_grounded_answer(request.prompt, chunks),
+        media_type="text/event-stream"
+    )`
+    }
   },
   {
     id: 'proj-2',
@@ -71,6 +104,7 @@ export const projectsData: Project[] = [
     githubUrl: 'https://github.com',
     liveDemoUrl: 'https://prosan.dev',
     featured: true,
+    readTime: '4 min read',
     role: 'AI Developer',
     timeline: 'Production System (2025)',
     client: 'Automation & Operations Hub',
@@ -104,7 +138,34 @@ export const projectsData: Project[] = [
       { label: 'Time Saved / Wk', value: '120+ hrs' },
       { label: 'Workflow Success', value: '99.5%' },
       { label: 'Cost Reduction', value: '65%' }
-    ]
+    ],
+    codeSnippet: {
+      language: 'python',
+      title: 'agent_state_machine.py',
+      description: 'LangGraph multi-step deterministic state router with validation guards',
+      code: `class AgentState(TypedDict):
+    task: str
+    plan: list[str]
+    current_step: int
+    tool_outputs: dict[str, Any]
+    error_recovery_count: int
+
+def router_node(state: AgentState) -> str:
+    """Deterministic routing guard based on step completion & verification."""
+    if state["error_recovery_count"] > 3:
+        return "human_escalation"
+    if state["current_step"] >= len(state["plan"]):
+        return "synthesize_final_report"
+    
+    # Route to specialized execution agent
+    next_action = state["plan"][state["current_step"]]
+    return "execute_tool" if next_action in ALLOWED_TOOLS else "replan_subtasks"
+
+workflow = StateGraph(AgentState)
+workflow.add_node("planner", generate_execution_plan)
+workflow.add_node("execute_tool", invoke_sandboxed_tool)
+workflow.add_conditional_edges("router", router_node)`
+    }
   },
   {
     id: 'proj-3',
@@ -122,6 +183,7 @@ export const projectsData: Project[] = [
     githubUrl: 'https://github.com',
     liveDemoUrl: 'https://prosan.dev',
     featured: true,
+    readTime: '5 min read',
     role: 'Full-Stack Engineer',
     timeline: 'Production System (2024 - 2025)',
     client: 'Enterprise Operations SaaS',
@@ -156,7 +218,34 @@ export const projectsData: Project[] = [
       { label: 'Uptime SLA', value: '99.99%' },
       { label: 'Daily Requests', value: '500k+' },
       { label: 'Page Load Speed', value: '0.8s' }
-    ]
+    ],
+    codeSnippet: {
+      language: 'typescript',
+      title: 'rbac_cache_middleware.ts',
+      description: 'Distributed Redis cache & JWT RBAC enforcement middleware',
+      code: `export const rbacCacheMiddleware = (requiredRole: Role) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const cacheKey = \`tenant:\${req.user.tenantId}:perm:\${req.user.userId}\`;
+    
+    // Check ultra-fast distributed Redis cache first
+    const cachedRole = await redisClient.get(cacheKey);
+    const userRole = cachedRole || (await db.getUserRole(req.user.userId));
+    
+    if (!cachedRole) {
+      await redisClient.setEx(cacheKey, 300, userRole); // 5-minute TTL
+    }
+
+    if (!hasPermission(userRole, requiredRole)) {
+      return res.status(403).json({
+        error: 'Forbidden',
+        message: 'Insufficient administrative clearance'
+      });
+    }
+
+    next();
+  };
+};`
+    }
   },
   {
     id: 'proj-4',
@@ -174,6 +263,7 @@ export const projectsData: Project[] = [
     githubUrl: 'https://github.com',
     liveDemoUrl: 'https://prosan.dev',
     featured: true,
+    readTime: '4 min read',
     role: 'Software Engineer / DevOps',
     timeline: 'Production System (2024 - 2026)',
     client: 'Cloud Infrastructure & DevOps',
@@ -208,6 +298,37 @@ export const projectsData: Project[] = [
       { label: 'Release Time', value: '3.5 min' },
       { label: 'Downtime', value: '0%' },
       { label: 'Image Size Cut', value: '68%' }
-    ]
+    ],
+    codeSnippet: {
+      language: 'yaml',
+      title: 'production_deploy_workflow.yml',
+      description: 'Zero-downtime containerized GitHub Actions CI/CD deployment workflow',
+      code: `name: Production Zero-Downtime Deployment
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build & Cache Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          tags: gcr.io/prosan-cloud/app:\${{ github.sha }}
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy prosan-production \\
+            --image gcr.io/prosan-cloud/app:\${{ github.sha }} \\
+            --platform managed \\
+            --region us-central1 \\
+            --allow-unauthenticated`
+    }
   }
 ];

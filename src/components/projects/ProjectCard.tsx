@@ -1,15 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Project } from '../../types';
 import { Badge } from '../common/Badge';
-import { ExternalLink, ArrowRight, Sparkles, Layers } from 'lucide-react';
+import { ViewCountBadge } from '../common/ViewCountBadge';
+import { CodeBlock } from '../common/CodeBlock';
+import { ExternalLink, ArrowRight, Sparkles, Layers, Github, Terminal, ChevronDown, ChevronUp } from 'lucide-react';
+export { ProjectCardSkeleton } from './ProjectCardSkeleton';
 
 interface ProjectCardProps {
   project: Project;
 }
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
+  const [isSnippetExpanded, setIsSnippetExpanded] = useState(false);
   return (
     <motion.article
       initial={{ opacity: 0, y: 16 }}
@@ -93,19 +97,78 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
             )}
           </div>
 
-          {/* Bottom Link */}
-          <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
-            <span className="text-xs font-mono text-slate-500">
-              {project.role}
-            </span>
+          {/* Project Card Actions & View Count */}
+          <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 space-y-3">
+            <div className="flex items-center justify-between">
+              <ViewCountBadge
+                itemId={project.slug}
+                itemType="project"
+                variant="compact"
+                showPopularityBadge={true}
+              />
 
-            <Link
-              to={`/projects/${project.slug}`}
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 transition-colors"
-            >
-              <span>Case Study</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-            </Link>
+              <Link
+                to={`/projects/${project.slug}`}
+                className="inline-flex items-center gap-1 text-xs font-semibold text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 transition-colors"
+              >
+                <span>Details</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
+
+            {/* Direct Action Buttons */}
+            <div className="grid grid-cols-2 gap-2 pt-1">
+              {project.liveDemoUrl && (
+                <a
+                  href={project.liveDemoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-600 text-white text-xs font-semibold shadow-xs transition-colors"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>Live Demo</span>
+                </a>
+              )}
+              {project.githubUrl && (
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold transition-colors"
+                >
+                  <Github className="w-3.5 h-3.5" />
+                  <span>GitHub</span>
+                </a>
+              )}
+            </div>
+
+            {/* Quick Code Snippet Toggle */}
+            {project.codeSnippet && (
+              <div className="pt-1">
+                <button
+                  type="button"
+                  onClick={() => setIsSnippetExpanded(!isSnippetExpanded)}
+                  className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-mono text-cyan-600 dark:text-cyan-400 border border-slate-200 dark:border-slate-700 transition-colors"
+                >
+                  <Terminal className="w-3.5 h-3.5 text-cyan-500" />
+                  <span>{isSnippetExpanded ? 'Hide Code Snippet' : 'Preview Code Snippet'}</span>
+                  {isSnippetExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                </button>
+
+                {isSnippetExpanded && (
+                  <div className="mt-2.5">
+                    <CodeBlock
+                      id={`project-card-snippet-${project.id}`}
+                      code={project.codeSnippet.code}
+                      language={project.codeSnippet.language}
+                      title={project.codeSnippet.title || `${project.slug}`}
+                      subtitle="Verified Implementation"
+                      className="text-xs"
+                    />
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>

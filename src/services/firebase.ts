@@ -1,5 +1,9 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getFirestore, Firestore } from 'firebase/firestore';
+import { 
+  initializeFirestore, 
+  getFirestore, 
+  Firestore 
+} from 'firebase/firestore';
 import config from '../../firebase-applet-config.json';
 
 const firebaseConfig = {
@@ -14,7 +18,21 @@ const firebaseConfig = {
 // Initialize Firebase App instance safely (singleton pattern)
 const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 
-// Initialize Firestore Database instance
-export const db: Firestore = getFirestore(app, config.firestoreDatabaseId || undefined);
+// Initialize Firestore Database instance with long-polling enabled to prevent iframe/proxy streaming timeouts
+let firestoreInstance: Firestore;
+try {
+  firestoreInstance = initializeFirestore(
+    app,
+    {
+      experimentalForceLongPolling: true,
+    },
+    config.firestoreDatabaseId || undefined
+  );
+} catch {
+  firestoreInstance = getFirestore(app, config.firestoreDatabaseId || undefined);
+}
+
+export const db: Firestore = firestoreInstance;
 
 export default app;
+

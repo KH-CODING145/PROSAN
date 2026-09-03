@@ -3,6 +3,11 @@ export type ThemeMode = 'dark' | 'light' | 'system';
 export type ProjectCategory = 
   | 'All'
   | 'Web Development'
+  | 'AI'
+  | 'Automation'
+  | 'Desktop Software'
+  | 'Mobile'
+  | 'Other'
   | 'Full-Stack'
   | 'AI & Automation'
   | 'Mobile Development'
@@ -23,6 +28,7 @@ export interface Project {
   githubUrl: string;
   liveDemoUrl: string;
   featured: boolean;
+  readTime?: string;
   role: string;
   timeline: string;
   client?: string;
@@ -38,6 +44,12 @@ export interface Project {
   solutions: string[];
   results: string[];
   metrics?: { label: string; value: string }[];
+  codeSnippet?: {
+    language: string;
+    code: string;
+    title?: string;
+    description?: string;
+  };
 }
 
 export type SkillLevel = 'Proficient' | 'Advanced' | 'Expert' | 'Familiar';
@@ -124,6 +136,16 @@ export interface ArticleItem {
   tags: string[];
   link: string;
   coverImage?: string;
+  category?: string;
+  sections?: {
+    heading: string;
+    body: string[];
+    codeSnippet?: {
+      language: string;
+      code: string;
+    };
+  }[];
+  keyTakeaways?: string[];
 }
 
 export interface GithubRepo {

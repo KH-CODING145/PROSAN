@@ -45,8 +45,13 @@ export const ServicesSection: React.FC = () => {
               className="p-6 sm:p-7 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs hover:border-cyan-500/40 hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
             >
               <div>
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-cyan-500/10 to-blue-500/10 dark:from-cyan-500/20 dark:to-blue-500/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center mb-5 border border-cyan-500/20">
-                  {iconMap[service.iconName] || <Globe className="w-5 h-5" />}
+                <div className="flex items-center justify-between mb-5">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-cyan-500/10 to-blue-500/10 dark:from-cyan-500/20 dark:to-blue-500/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center border border-cyan-500/20">
+                    {iconMap[service.iconName] || <Globe className="w-5 h-5" />}
+                  </div>
+                  <span className="text-xl font-black font-mono text-slate-300 dark:text-slate-700 select-none">
+                    0{idx + 1}
+                  </span>
                 </div>
 
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">

@@ -1,16 +1,44 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { PageContainer } from '../components/layout/PageContainer';
 import { projectsData } from '../data/projects';
 import { ProjectCategory } from '../types';
 import { ProjectFilter } from '../components/projects/ProjectFilter';
-import { ProjectCard } from '../components/projects/ProjectCard';
+import { ProjectCard, ProjectCardSkeleton } from '../components/projects/ProjectCard';
 import { SectionTitle } from '../components/common/SectionTitle';
-import { FolderCode, Sparkles } from 'lucide-react';
+import { generateProjectsListSchema } from '../utils/seoSchemas';
+import { siteConfig } from '../config/siteConfig';
+import { FolderCode, Sparkles, RefreshCw } from 'lucide-react';
 
 export const Projects: React.FC = () => {
+  const [searchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<ProjectCategory>('All');
   const [selectedTech, setSelectedTech] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Sync state with URL query parameters
+  useEffect(() => {
+    const q = searchParams.get('q');
+    const cat = searchParams.get('category');
+    if (q) setSearchQuery(q);
+    if (cat) setSelectedCategory(cat as ProjectCategory);
+  }, [searchParams]);
+
+  // Simulate data fetching on initial mount
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 600);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleRefresh = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+  };
 
   // Collect all unique technologies for filter dropdown
   const availableTechs = useMemo(() => {
@@ -31,7 +59,13 @@ export const Projects: React.FC = () => {
 
       // Category matching
       const matchesCategory =
-        selectedCategory === 'All' || project.category === selectedCategory;
+        selectedCategory === 'All' ||
+        project.category === selectedCategory ||
+        (selectedCategory === ('Web' as any) && (project.category === 'Web Development' || project.category === 'Full-Stack')) ||
+        (selectedCategory === ('AI' as any) && (project.category === 'AI & Automation' || project.category === 'AI')) ||
+        (selectedCategory === ('Automation' as any) && (project.category === 'AI & Automation' || project.category === 'Automation')) ||
+        (selectedCategory === ('Desktop' as any) && (project.category === 'Desktop Software')) ||
+        (selectedCategory === ('Mobile' as any) && (project.category === 'Mobile Development' || project.category === 'Mobile'));
 
       // Tech matching
       const matchesTech =
@@ -41,10 +75,29 @@ export const Projects: React.FC = () => {
     });
   }, [searchQuery, selectedCategory, selectedTech]);
 
+  const projectsListSchema = useMemo(() => generateProjectsListSchema(projectsData), []);
+
   return (
     <PageContainer
       title="Engineering Projects & Case Studies"
-      description="Explore full-stack web applications, AI automation agents, distributed observability platforms, and open-source packages."
+      description="Explore production-grade full-stack web applications, AI automation agents, distributed observability platforms, and open-source packages built by PRO SAN."
+      canonicalUrl={`${siteConfig.siteUrl}/projects`}
+      type="website"
+      keywords={[
+        'Software Projects',
+        'AI Automation Systems',
+        'Full Stack Apps',
+        'Case Studies',
+        'Open Source',
+        'RAG Platform',
+        'React',
+        'TypeScript',
+        'FastAPI',
+        'PRO SAN'
+      ]}
+      image="/images/og-preview.png"
+      imageAlt="PRO SAN Engineering Projects and AI Systems Portfolio"
+      schema={projectsListSchema}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionTitle
@@ -66,7 +119,13 @@ export const Projects: React.FC = () => {
         />
 
         {/* Projects Grid */}
-        {filteredProjects.length > 0 ? (
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <ProjectCardSkeleton key={`project-skeleton-${index}`} />
+            ))}
+          </div>
+        ) : filteredProjects.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {filteredProjects.map((project) => (
               <ProjectCard key={project.id} project={project} />

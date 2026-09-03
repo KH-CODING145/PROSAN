@@ -14,14 +14,14 @@ interface ProjectFilterProps {
   totalResults: number;
 }
 
-const categories: ProjectCategory[] = [
+const categories: (ProjectCategory | string)[] = [
   'All',
-  'AI & Automation',
-  'Full-Stack',
-  'Web Development',
-  'SaaS',
-  'Cloud & Backend',
-  'Mobile Development'
+  'Web',
+  'AI',
+  'Automation',
+  'Desktop',
+  'Mobile',
+  'Full-Stack'
 ];
 
 export const ProjectFilter: React.FC<ProjectFilterProps> = ({
@@ -83,7 +83,7 @@ export const ProjectFilter: React.FC<ProjectFilterProps> = ({
             return (
               <button
                 key={category}
-                onClick={() => onCategoryChange(category)}
+                onClick={() => onCategoryChange(category as any)}
                 className={cn(
                   'px-3.5 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all cursor-pointer',
                   isSelected

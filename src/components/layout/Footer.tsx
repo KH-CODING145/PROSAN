@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useI18n } from '../../context/I18nContext';
+import { useSearch } from '../../context/SearchContext';
 import { siteConfig } from '../../config/siteConfig';
 import { NewsletterSubscribe } from './NewsletterSubscribe';
 import { 
@@ -12,10 +14,13 @@ import {
   Mail, 
   ArrowUp, 
   Terminal, 
-  Code 
+  Code,
+  Search
 } from 'lucide-react';
 
 export const Footer: React.FC = () => {
+  const { t } = useI18n();
+  const { openSearch, isMac } = useSearch();
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -59,37 +64,37 @@ export const Footer: React.FC = () => {
           {/* Quick Navigation */}
           <div>
             <h4 className="text-xs uppercase font-mono font-bold tracking-wider text-slate-900 dark:text-slate-200 mb-4">
-              Explore
+              {t('footer.explore', 'Explore')}
             </h4>
             <ul className="space-y-2.5 text-sm text-slate-600 dark:text-slate-400">
               <li>
                 <Link to="/" className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
-                  Home
+                  {t('nav.home', 'Home')}
                 </Link>
               </li>
               <li>
                 <Link to="/about" className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
-                  About Us
+                  {t('nav.about', 'About Us')}
                 </Link>
               </li>
               <li>
                 <Link to="/services" className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
-                  Services
+                  {t('nav.services', 'Services')}
                 </Link>
               </li>
               <li>
                 <Link to="/products" className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
-                  Products
+                  {t('nav.products', 'Products')}
                 </Link>
               </li>
               <li>
                 <Link to="/features" className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
-                  Features
+                  {t('nav.features', 'Features')}
                 </Link>
               </li>
               <li>
                 <Link to="/pricing" className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
-                  Pricing
+                  {t('nav.pricing', 'Pricing')}
                 </Link>
               </li>
             </ul>
@@ -98,37 +103,47 @@ export const Footer: React.FC = () => {
           {/* Resources & Insights */}
           <div>
             <h4 className="text-xs uppercase font-mono font-bold tracking-wider text-slate-900 dark:text-slate-200 mb-4">
-              Insights & Work
+              {t('footer.insights', 'Insights & Work')}
             </h4>
             <ul className="space-y-2.5 text-sm text-slate-600 dark:text-slate-400">
               <li>
-                <Link to="/portfolio" className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
-                  Portfolio & Case Studies
+                <Link to="/projects" className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
+                  {t('nav.projects', 'Portfolio & Projects')}
                 </Link>
               </li>
               <li>
                 <Link to="/blog" className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
-                  Blog & Tech Deep Dives
+                  {t('nav.blog', 'Blog & Tech Deep Dives')}
                 </Link>
               </li>
               <li>
                 <Link to="/experience" className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
-                  Career Experience
+                  {t('nav.experience', 'Career Experience')}
                 </Link>
               </li>
               <li>
                 <Link to="/skills" className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
-                  Skills & Technology Stack
+                  {t('nav.skills', 'Skills & Technology Stack')}
                 </Link>
               </li>
               <li>
                 <Link to="/certificates" className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
-                  Credentials & Certs
+                  {t('nav.certificates', 'Credentials & Certs')}
                 </Link>
               </li>
               <li>
+                <button
+                  type="button"
+                  onClick={() => openSearch()}
+                  className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors flex items-center gap-1.5 text-left group"
+                >
+                  <Search className="w-3.5 h-3.5 text-cyan-500 group-hover:scale-110 transition-transform" />
+                  <span>Command Palette ({isMac ? '⌘K' : 'Ctrl+K'})</span>
+                </button>
+              </li>
+              <li>
                 <Link to="/contact" className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
-                  Contact Us
+                  {t('nav.contact', 'Contact Us')}
                 </Link>
               </li>
             </ul>
@@ -137,7 +152,7 @@ export const Footer: React.FC = () => {
           {/* Connect & Social */}
           <div>
             <h4 className="text-xs uppercase font-mono font-bold tracking-wider text-slate-900 dark:text-slate-200 mb-4">
-              Connect
+              {t('footer.connect', 'Connect')}
             </h4>
             <div className="flex flex-wrap gap-2">
               {socialLinks.map((social) => {
@@ -164,7 +179,7 @@ export const Footer: React.FC = () => {
 
         {/* Bottom bar */}
         <div className="pt-8 border-t border-slate-200/80 dark:border-slate-850 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
-          <p>© 2026 {siteConfig.profile.name}. All rights reserved.</p>
+          <p>© 2026 {siteConfig.profile.name}. {t('footer.rights', 'All rights reserved.')}</p>
           <div className="flex items-center gap-6">
             <span className="flex items-center gap-1.5">
               <Code className="w-3.5 h-3.5 text-cyan-500" /> Built with React 19, TypeScript & Tailwind
@@ -175,7 +190,7 @@ export const Footer: React.FC = () => {
               className="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors flex items-center gap-1"
             >
               <ArrowUp className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Top</span>
+              <span className="hidden sm:inline">{t('footer.top', 'Top')}</span>
             </button>
           </div>
         </div>
